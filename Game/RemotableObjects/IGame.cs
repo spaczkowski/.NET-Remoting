@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace RemotableObjects
 {
-    public class Class1
+    public interface IGame
     {
+        void makeMove(String player);
+        bool connectNewPlayer(String name);
+        String getCurrentPlayer();
     }
 }
