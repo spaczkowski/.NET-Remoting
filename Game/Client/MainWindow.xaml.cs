@@ -104,7 +104,7 @@ namespace Client
             hero = new Image();
             hero.Source = knight;
             hero.Stretch = Stretch.Fill;
-            hero.Margin = new Thickness(20 * x - 10, 20 * y - 10, 0, 0);
+            hero.Margin = new Thickness(20 * x - 10, 20 * y - 20, 0, 0);
             hero.Width = 40;
             hero.Height = 40;
             Terrain.Children.Add(hero);
