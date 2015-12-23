@@ -26,42 +26,43 @@ namespace DebugClient
             {
                 i++;
                 Console.ReadLine();
-                game.connectNewPlayer("Player" + i);
+                game.connectNewPlayer();
             }
         }
 
         static void playerManagementTest()
         {
             IGame game = Game.Instance;
-            game.connectNewPlayer("A");
-            game.connectNewPlayer("B");
-            game.connectNewPlayer("C");
-            game.connectNewPlayer("B");
-            game.connectNewPlayer("A");
+            Array values = Enum.GetValues(typeof(MoveType));
+            //game.connectNewPlayer("A");
+           // game.connectNewPlayer("B");
+           // game.connectNewPlayer("C");
+            //game.connectNewPlayer("B");
+           // game.connectNewPlayer("A");
 
             for (int i = 0; i < 50; ++i)
             {
-                game.makeMove("A");
+                game.makeMove("A", (MoveType) values.GetValue(i % values.Length));
             }
 
             for (int i = 0; i < 50; ++i)
             {
-                game.makeMove("B");
+                game.makeMove("B", (MoveType) values.GetValue(i % values.Length));
             }
 
             for (int i = 0; i < 50; ++i)
             {
-                game.makeMove("C");
+                game.makeMove("C", (MoveType) values.GetValue(i % values.Length));
             }
 
             for (int i = 0; i < 50; ++i)
             {
-                game.makeMove("B");
+                game.makeMove("B", (MoveType) values.GetValue(i % values.Length));
             }
 
             for (int i = 0; i < 50; ++i)
             {
-                game.makeMove("A");
+                game.makeMove("A", (MoveType) values.GetValue(i % values.Length));
             }
         }
 

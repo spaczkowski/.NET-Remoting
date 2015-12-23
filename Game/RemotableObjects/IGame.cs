@@ -6,10 +6,20 @@ using System.Threading.Tasks;
 
 namespace RemotableObjects
 {
+    //TODO: Może będą jakieś inne możliwości ruchu?
+    public enum MoveType
+    {
+        Up,
+        Down,
+        Left,
+        Right,
+        Attack
+    };
+
     public interface IGame
     {
-        void makeMove(String player);
-        bool connectNewPlayer(String name);
-        String getCurrentPlayer();
+        void makeMove(String playerName, MoveType moveType);
+        String connectNewPlayer();
+        Player getCurrentPlayer();
     }
 }
