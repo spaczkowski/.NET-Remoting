@@ -25,23 +25,25 @@ namespace Client
         ImageSource sand;
         ImageSource water;
 
-        public MainWindow()
-        {
-            InitializeComponent();
+        ImageSource knight;
 
+        void DrawMap()
+        {
             //Uri do plików z teksturami
             var grassUri = new Uri(@"resources/grass.jpg", UriKind.Relative);
             var sandUri = new Uri(@"resources/sand.jpg", UriKind.Relative);
             var waterUri = new Uri(@"resources/water.jpg", UriKind.Relative);
-       
+
+            var knightUri = new Uri(@"resources/knight.png", UriKind.Relative);
+
             //tutaj brzydko podana ścieżka, ale to i tak będzie pobierane z serwera więc walić póki co
             var map = File.ReadLines(@"../../resources/map.csv").Select(x => x.Split(',')).ToArray();
-            
+
             grass = new BitmapImage(grassUri);
             sand = new BitmapImage(sandUri);
             water = new BitmapImage(waterUri);
+            knight = new BitmapImage(knightUri);
 
-            
             Image[,] terrain = new Image[40, 32];
 
             for (int i = 0; i < 40; ++i)
@@ -50,12 +52,13 @@ namespace Client
                 {
                     terrain[i, j] = new Image();
 
-                    terrain[i, j].Margin = new Thickness(i*20, j*20, 0, 0);
+                    terrain[i, j].Margin = new Thickness(i * 20, j * 20, 0, 0);
 
-                    terrain[i, j].Height = 40;
-                    terrain[i, j].Width = 40;
+                    terrain[i, j].Height = 20;
+                    terrain[i, j].Width = 20;
 
-                    switch (map[j][i]) {
+                    switch (map[j][i])
+                    {
                         case "G":
                             terrain[i, j].Source = grass;
                             break;
@@ -68,15 +71,33 @@ namespace Client
                         default:
                             terrain[i, j].Source = grass;
                             break;
-                    }                                     
+                    }
 
                     terrain[i, j].Stretch = Stretch.Fill;
 
                     Terrain.Children.Add(terrain[i, j]);
                 }
             }
+        }
+
+        void DrawPlayer(int x, int y)
+        {
+            var hero = new Image();
+            hero.Source = knight;
+            hero.Stretch = Stretch.Fill;
+            hero.Margin = new Thickness(20*x-10, 20*y-10, 0, 0);
+            hero.Width = 40;
+            hero.Height = 40;
+            Terrain.Children.Add(hero);
+        }
 
 
+        public MainWindow()
+        {
+            InitializeComponent();
+            DrawMap();
+            DrawPlayer(12, 7);
+            DrawPlayer(17, 22);       
         }
     }
 }
