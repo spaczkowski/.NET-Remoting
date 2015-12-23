@@ -26,7 +26,7 @@ namespace DebugClient
             {
                 i++;
                 Console.ReadLine();
-                game.connectNewPlayer("Player" + i);
+                game.connectNewPlayer();
             }
         }
 
@@ -34,11 +34,11 @@ namespace DebugClient
         {
             IGame game = Game.Instance;
             Array values = Enum.GetValues(typeof(MoveType));
-            game.connectNewPlayer("A");
-            game.connectNewPlayer("B");
-            game.connectNewPlayer("C");
-            game.connectNewPlayer("B");
-            game.connectNewPlayer("A");
+            //game.connectNewPlayer("A");
+           // game.connectNewPlayer("B");
+           // game.connectNewPlayer("C");
+            //game.connectNewPlayer("B");
+           // game.connectNewPlayer("A");
 
             for (int i = 0; i < 50; ++i)
             {

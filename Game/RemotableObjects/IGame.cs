@@ -19,7 +19,7 @@ namespace RemotableObjects
     public interface IGame
     {
         void makeMove(String playerName, MoveType moveType);
-        bool connectNewPlayer(String name);
+        String connectNewPlayer();
         Player getCurrentPlayer();
     }
 }

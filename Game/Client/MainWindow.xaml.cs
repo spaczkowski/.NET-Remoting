@@ -1,7 +1,10 @@
-﻿using System;
+﻿using RemotableObjects;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.Remoting.Channels;
+using System.Runtime.Remoting.Channels.Tcp;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -26,6 +29,22 @@ namespace Client
         ImageSource water;
 
         ImageSource knight;
+
+        private static String serverAddress = "localhost";
+        private static int tcpPort = 1357;
+
+        private String playerName;
+        private Game game;
+
+        private String connectionTest()
+        {
+            TcpChannel chan = new TcpChannel();
+            ChannelServices.RegisterChannel(chan, false);
+
+            game = (Game)Activator.GetObject(typeof(Game), "tcp://" + serverAddress + ":" + tcpPort + "/Game");
+            
+            return game.connectNewPlayer();
+        }
 
         void DrawMap()
         {
@@ -96,15 +115,19 @@ namespace Client
 
         Image hero;
 
-        void DrawPlayer(int x, int y, bool isRightFaced)
+        void DrawPlayer(bool isRightFaced)
         {
             var knightUri = new Uri(@"resources/knight.png", UriKind.Relative);
             knight = new BitmapImage(knightUri);
 
+            Player player = game.getPlayer(playerName);
+
+            Point position = new Point(player.Position.X, player.Position.Y);
+
             hero = new Image();
             hero.Source = knight;
             hero.Stretch = Stretch.Fill;
-            hero.Margin = new Thickness(20 * x - 10, 20 * y - 20, 0, 0);
+            hero.Margin = new Thickness(20 * position.X - 10, 20 * position.Y - 20, 0, 0);
             hero.Width = 40;
             hero.Height = 40;
             Terrain.Children.Add(hero);
@@ -117,19 +140,15 @@ namespace Client
                 hero.RenderTransform = flipTrans;
             }
         }
-
-        int x, y;
         bool rightFaced;
 
         public MainWindow()
         {
             InitializeComponent();
             DrawMap();
-
-            x = 12;
-            y = 7;
+            playerName = connectionTest();
             
-            DrawPlayer(12, 7, false);
+            DrawPlayer(false);
             
             Random r = new Random(1993);
             for (int i = 0; i < 60; ++i) {
@@ -144,28 +163,25 @@ namespace Client
             switch (e.Key) 
             {
                 case Key.Left:
-                    x--;
+                    game.makeMove(playerName, MoveType.Left);
                     rightFaced = false;
                     break;
                 case Key.Right:
-                    x++;
+                    game.makeMove(playerName, MoveType.Right);
                     rightFaced = true;
                     break;
                 case Key.Up:
-                    y--;
+                    game.makeMove(playerName, MoveType.Up);
                     break;
                 case Key.Down:
-                    y++;
+                    game.makeMove(playerName, MoveType.Down);
                     break;
             }
 
-            if (x < 0) x = 0;
-            if (x > 39) x = 39;
-            if (y < 0) y = 0;
-            if (y > 31) y = 31;
+
 
             Terrain.Children.Remove(hero);
-            DrawPlayer(x, y, rightFaced);
+            DrawPlayer(rightFaced);
         }
 
     }

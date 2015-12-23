@@ -8,6 +8,7 @@ using System.Drawing;
 
 namespace RemotableObjects
 {
+    [Serializable]
     public class Player : Character
     {
         public void collectItem(Item gameObject)
