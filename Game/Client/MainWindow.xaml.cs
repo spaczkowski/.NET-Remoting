@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.Remoting.Channels;
 using System.Runtime.Remoting.Channels.Tcp;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -99,6 +100,18 @@ namespace Client
             }
         }
 
+        public delegate void UpdatePlayers();
+
+        private void UpdatingThread()
+        {
+            while(true)
+            {
+                Thread.Sleep(100);
+                Terrain.Dispatcher.Invoke(new UpdatePlayers(RenderPlayers));
+            }
+        }
+
+
         void DrawTree(int x, int y)
         {
             var treeUri = new Uri(@"resources/tree.png", UriKind.Relative);
@@ -113,18 +126,17 @@ namespace Client
             Terrain.Children.Add(tree);
         }
 
-        Image hero;
+        LinkedList<Image> heroes;
 
-        void DrawPlayer(bool isRightFaced)
+        void DrawPlayer(Player player, bool isRightFaced, int skin, Image hero)
         {
-            var knightUri = new Uri(@"resources/knight.png", UriKind.Relative);
+            var knightUri = new Uri(@"resources/knight" + (skin % 4 + 1) + ".png", UriKind.Relative);
             knight = new BitmapImage(knightUri);
 
-            Player player = game.getPlayer(playerName);
+            //Player player = game.getPlayer(playerName);
 
             Point position = new Point(player.Position.X, player.Position.Y);
-
-            hero = new Image();
+            Terrain.Children.Remove(hero);
             hero.Source = knight;
             hero.Stretch = Stretch.Fill;
             hero.Margin = new Thickness(20 * position.X - 10, 20 * position.Y - 20, 0, 0);
@@ -147,8 +159,17 @@ namespace Client
             InitializeComponent();
             DrawMap();
             playerName = connectionTest();
-            
-            DrawPlayer(false);
+            heroes = new LinkedList<Image>();
+            for (int i = 0; i < 32; ++i)
+            {
+                heroes.AddLast(new Image());
+            }
+
+
+            RenderPlayers();
+            Thread test = new Thread(new ThreadStart(UpdatingThread));
+            test.Start();
+
             
             Random r = new Random(1993);
             for (int i = 0; i < 60; ++i) {
@@ -178,10 +199,19 @@ namespace Client
                     break;
             }
 
+            RenderPlayers();            
+        }
 
 
-            Terrain.Children.Remove(hero);
-            DrawPlayer(rightFaced);
+        void RenderPlayers()
+        {
+            LinkedList<Player> players = game.getAllPlayers();
+            int i = 0;
+            foreach (var player in players)
+            {
+                DrawPlayer(player, false, i + 1, heroes.ElementAt(i));
+                ++i;
+            }
         }
 
     }
