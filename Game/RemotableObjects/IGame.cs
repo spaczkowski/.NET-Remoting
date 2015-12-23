@@ -16,10 +16,13 @@ namespace RemotableObjects
         Attack
     };
 
+    
+
     public interface IGame
     {
         void makeMove(String playerName, MoveType moveType);
         String connectNewPlayer();
         Player getCurrentPlayer();
+        LinkedList<Player> getAllPlayers();
     }
 }
