@@ -94,33 +94,79 @@ namespace Client
             Terrain.Children.Add(tree);
         }
 
-        void DrawPlayer(int x, int y)
+        Image hero;
+
+        void DrawPlayer(int x, int y, bool isRightFaced)
         {
             var knightUri = new Uri(@"resources/knight.png", UriKind.Relative);
             knight = new BitmapImage(knightUri);
 
-            var hero = new Image();
+            hero = new Image();
             hero.Source = knight;
             hero.Stretch = Stretch.Fill;
             hero.Margin = new Thickness(20 * x - 10, 20 * y - 10, 0, 0);
             hero.Width = 40;
             hero.Height = 40;
             Terrain.Children.Add(hero);
+
+            if (isRightFaced)
+            {
+                hero.RenderTransformOrigin = new Point(0.5, 0.5);
+                ScaleTransform flipTrans = new ScaleTransform();
+                flipTrans.ScaleX = -1;
+                hero.RenderTransform = flipTrans;
+            }
         }
+
+        int x, y;
+        bool rightFaced;
 
         public MainWindow()
         {
             InitializeComponent();
             DrawMap();
-            DrawPlayer(12, 7);
-            DrawPlayer(17, 22);
 
+            x = 12;
+            y = 7;
+            
+            DrawPlayer(12, 7, false);
+            
             Random r = new Random(1993);
             for (int i = 0; i < 60; ++i) {
                 DrawTree(r.Next(7,20), r.Next(5,27));
             }
-            
 
+            this.KeyDown += new KeyEventHandler(MainWindow_KeyDown);
         }
+
+        void MainWindow_KeyDown(object sender, KeyEventArgs e)
+        {
+            switch (e.Key) 
+            {
+                case Key.Left:
+                    x--;
+                    rightFaced = false;
+                    break;
+                case Key.Right:
+                    x++;
+                    rightFaced = true;
+                    break;
+                case Key.Up:
+                    y--;
+                    break;
+                case Key.Down:
+                    y++;
+                    break;
+            }
+
+            if (x < 0) x = 0;
+            if (x > 39) x = 39;
+            if (y < 0) y = 0;
+            if (y > 31) y = 31;
+
+            Terrain.Children.Remove(hero);
+            DrawPlayer(x, y, rightFaced);
+        }
+
     }
 }
