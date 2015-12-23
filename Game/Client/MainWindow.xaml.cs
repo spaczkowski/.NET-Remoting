@@ -34,7 +34,7 @@ namespace Client
             var sandUri = new Uri(@"resources/sand.jpg", UriKind.Relative);
             var waterUri = new Uri(@"resources/water.jpg", UriKind.Relative);
 
-            var knightUri = new Uri(@"resources/knight.png", UriKind.Relative);
+            
 
             //tutaj brzydko podana ścieżka, ale to i tak będzie pobierane z serwera więc walić póki co
             var map = File.ReadLines(@"../../resources/map.csv").Select(x => x.Split(',')).ToArray();
@@ -42,7 +42,7 @@ namespace Client
             grass = new BitmapImage(grassUri);
             sand = new BitmapImage(sandUri);
             water = new BitmapImage(waterUri);
-            knight = new BitmapImage(knightUri);
+            
 
             Image[,] terrain = new Image[40, 32];
 
@@ -80,24 +80,47 @@ namespace Client
             }
         }
 
+        void DrawTree(int x, int y)
+        {
+            var treeUri = new Uri(@"resources/tree.png", UriKind.Relative);
+            var treeBmp = new BitmapImage(treeUri);
+
+            var tree = new Image();
+            tree.Source = treeBmp;
+            tree.Stretch = Stretch.Fill;
+            tree.Margin = new Thickness(20*x-10, 20*y-20, 0, 0);
+            tree.Width = 40;
+            tree.Height = 40;
+            Terrain.Children.Add(tree);
+        }
+
         void DrawPlayer(int x, int y)
         {
+            var knightUri = new Uri(@"resources/knight.png", UriKind.Relative);
+            knight = new BitmapImage(knightUri);
+
             var hero = new Image();
             hero.Source = knight;
             hero.Stretch = Stretch.Fill;
-            hero.Margin = new Thickness(20*x-10, 20*y-10, 0, 0);
+            hero.Margin = new Thickness(20 * x - 10, 20 * y - 10, 0, 0);
             hero.Width = 40;
             hero.Height = 40;
             Terrain.Children.Add(hero);
         }
-
 
         public MainWindow()
         {
             InitializeComponent();
             DrawMap();
             DrawPlayer(12, 7);
-            DrawPlayer(17, 22);       
+            DrawPlayer(17, 22);
+
+            Random r = new Random(1993);
+            for (int i = 0; i < 60; ++i) {
+                DrawTree(r.Next(7,20), r.Next(5,27));
+            }
+            
+
         }
     }
 }
