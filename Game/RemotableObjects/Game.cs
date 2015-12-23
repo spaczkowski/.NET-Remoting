@@ -267,6 +267,11 @@ namespace RemotableObjects
             return players.FirstOrDefault(p => p.Name == name);
         }
 
+        public LinkedList<Player> getAllPlayers()
+        {
+            return players;
+        }
+
         private void addPlayer(String name)
         {
             Player player = new Player();

@@ -110,10 +110,13 @@
     <Resource Include="resources\water.jpg" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="resources\knight.png" />
+    <Resource Include="resources\tree.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="resources\tree.png" />
+    <Resource Include="resources\knight1.png" />
+    <Resource Include="resources\knight2.png" />
+    <Resource Include="resources\knight3.png" />
+    <Resource Include="resources\knight4.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
