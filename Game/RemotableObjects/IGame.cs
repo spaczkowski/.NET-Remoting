@@ -24,5 +24,6 @@ namespace RemotableObjects
         String connectNewPlayer();
         Player getCurrentPlayer();
         LinkedList<Player> getAllPlayers();
+        String[][] GetMap();        
     }
 }

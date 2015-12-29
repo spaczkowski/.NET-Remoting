@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -29,6 +30,8 @@ namespace RemotableObjects
         private TileType[,] terrain;
         private GameObject[,] objectsOnMap;
 
+        private String[][] map;
+
         private int mapWidth;
         private int mapHeight;
 
@@ -39,6 +42,7 @@ namespace RemotableObjects
         {
             players = new LinkedList<Player>();
             setObjects();
+            //setMap();
         }
 
         public static Game Instance
@@ -53,9 +57,11 @@ namespace RemotableObjects
             }
         }
 
-        public void setMap(String fileName)
+        public void setMap()
         {
-            //TODO: Wczytywanie mapy z pliku to tablicy terrain
+            map = new String[32][];
+            for (int i = 0; i < 32; ++i) map[i] = new String[40];
+            map = File.ReadLines(@"../../resources/map.csv").Select(x => x.Split(',')).ToArray();
         }
 
         public void setObjects()
@@ -270,6 +276,11 @@ namespace RemotableObjects
         public LinkedList<Player> getAllPlayers()
         {
             return players;
+        }
+
+        public String[][] GetMap()
+        {
+            return map;
         }
 
         private void addPlayer(String name)

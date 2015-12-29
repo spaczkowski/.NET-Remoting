@@ -54,8 +54,7 @@ namespace Client
             var sandUri = new Uri(@"resources/sand.jpg", UriKind.Relative);
             var waterUri = new Uri(@"resources/water.jpg", UriKind.Relative);
 
-            
-
+           
             //tutaj brzydko podana ścieżka, ale to i tak będzie pobierane z serwera więc walić póki co
             var map = File.ReadLines(@"../../resources/map.csv").Select(x => x.Split(',')).ToArray();
 
@@ -156,9 +155,10 @@ namespace Client
 
         public MainWindow()
         {
-            InitializeComponent();
-            DrawMap();
+            InitializeComponent();            
             playerName = connectionTest();
+
+            DrawMap();
             heroes = new LinkedList<Image>();
             for (int i = 0; i < 32; ++i)
             {
