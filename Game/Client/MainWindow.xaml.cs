@@ -30,6 +30,7 @@ namespace Client
         ImageSource water;
 
         ImageSource knight;
+        ImageSource shield;
 
         private static String serverAddress = "localhost";
         private static int tcpPort = 1357;
@@ -130,26 +131,50 @@ namespace Client
 
         void DrawPlayer(Player player, bool isRightFaced, int skin, Image hero)
         {
-            var knightUri = new Uri(@"resources/knight" + (skin % 4 + 1) + ".png", UriKind.Relative);
-            knight = new BitmapImage(knightUri);
-
-            //Player player = game.getPlayer(playerName);
-
-            Point position = new Point(player.Position.X, player.Position.Y);
-            Terrain.Children.Remove(hero);
-            hero.Source = knight;
-            hero.Stretch = Stretch.Fill;
-            hero.Margin = new Thickness(20 * position.X - 10, 20 * position.Y - 20, 0, 0);
-            hero.Width = 40;
-            hero.Height = 40;
-            Terrain.Children.Add(hero);
-
-            if (isRightFaced)
+            if (!player.IsKilled)
             {
-                hero.RenderTransformOrigin = new Point(0.5, 0.5);
-                ScaleTransform flipTrans = new ScaleTransform();
-                flipTrans.ScaleX = -1;
-                hero.RenderTransform = flipTrans;
+                var knightUri = new Uri(@"resources/knight" + (player.Id + 1) + ".png", UriKind.Relative);
+                knight = new BitmapImage(knightUri);
+
+                //Player player = game.getPlayer(playerName);
+
+                Point position = new Point(player.Position.X, player.Position.Y);
+                Terrain.Children.Remove(hero);
+
+                hero.Source = knight;
+                hero.Stretch = Stretch.Fill;
+                hero.Margin = new Thickness(20 * position.X - 10, 20 * position.Y - 20, 0, 0);
+                hero.Width = 40;
+                hero.Height = 40;
+                Terrain.Children.Add(hero);
+
+                if (isRightFaced)
+                {
+                    hero.RenderTransformOrigin = new Point(0.5, 0.5);
+                    ScaleTransform flipTrans = new ScaleTransform();
+                    flipTrans.ScaleX = -1;
+                    hero.RenderTransform = flipTrans;
+                }
+            }
+            else
+            {
+                Terrain.Children.Remove(hero);
+                
+                /*
+                var shieldUri = new Uri(@"resources/shield.png", UriKind.Relative);
+                shield = new BitmapImage(shieldUri);
+
+                //Player player = game.getPlayer(playerName);
+
+                Point position = new Point(player.Position.X, player.Position.Y);
+                Terrain.Children.Remove(hero);
+
+                hero.Source = shield;
+                hero.Stretch = Stretch.Fill;
+                hero.Margin = new Thickness(20 * position.X - 10, 20 * position.Y - 20, 0, 0);
+                hero.Width = 40;
+                hero.Height = 40;
+                Terrain.Children.Add(hero); */
             }
         }
         bool rightFaced;
@@ -209,7 +234,7 @@ namespace Client
             int i = 0;
             foreach (var player in players)
             {
-                DrawPlayer(player, false, i + 1, heroes.ElementAt(i));
+                DrawPlayer(player, false, i + 1, heroes.ElementAt(player.Id));
                 ++i;
             }
         }

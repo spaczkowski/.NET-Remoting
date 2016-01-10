@@ -11,12 +11,27 @@ namespace RemotableObjects
     [Serializable]
     public abstract class Character
     {
+        protected int id;
         protected String name;
         protected Point position;
         protected int healthPoints;
         protected int attack;
         protected int defense;
         protected LinkedList<Item> equipment;
+        protected bool isKilled;
+
+        public int Id
+        {
+            get
+            {
+                return id;
+            }
+
+            set
+            {
+                id = value;
+            }
+        }
 
         public string Name
         {
@@ -84,6 +99,19 @@ namespace RemotableObjects
             set
             {
                 defense = value;
+            }
+        }
+
+        public bool IsKilled
+        {
+            get
+            {
+                return isKilled;
+            }
+
+            set
+            {
+                isKilled = value;
             }
         }
     }
