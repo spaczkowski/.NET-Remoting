@@ -195,7 +195,7 @@ namespace RemotableObjects
                     else if (moveType == MoveType.Right)
                     {
                         if ((currentPlayer.Position.X + 1) == p.Position.X && currentPlayer.Position.Y == p.Position.Y)
-                        //{
+                        {
                             isFigth = true;
                             enemy = p;
                             Console.WriteLine("Figth - RIGHT");
