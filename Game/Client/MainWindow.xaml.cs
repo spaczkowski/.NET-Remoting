@@ -135,7 +135,7 @@ namespace Client
         {
             if (!player.IsKilled)
             {
-                var knightUri = new Uri(@"resources/knight" + (player.Id + 1) + ".png", UriKind.Relative);
+                var knightUri = new Uri(@"resources/knight" + (player.Id % 4 + 1) + ".png", UriKind.Relative);
                 knight = new BitmapImage(knightUri);
 
                 //Player player = game.getPlayer(playerName);
