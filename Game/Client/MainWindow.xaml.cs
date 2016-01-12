@@ -100,6 +100,7 @@ namespace Client
         }
 
         public delegate void UpdatePlayers();
+        public delegate void UpdateGui();
 
         private void UpdatingThread()
         {
@@ -108,6 +109,7 @@ namespace Client
                 Thread.Sleep(100);
                 Terrain.Dispatcher.Invoke(new UpdatePlayers(RenderPlayers));
                 Terrain.Dispatcher.Invoke(new UpdatePlayers(UpdateObjects));
+                Gui.Dispatcher.Invoke(new UpdateGui(RenderGui));
             }
         }
 
@@ -224,6 +226,9 @@ namespace Client
 
             UpdateObjects();
 
+            lifeBarBorders = new Dictionary<Character, Rectangle>();
+            lifeBars = new Dictionary<Character, Rectangle>();
+
             this.KeyDown += new KeyEventHandler(MainWindow_KeyDown);
             test.Start();
         }
@@ -249,6 +254,7 @@ namespace Client
             }
             
             RenderPlayers();
+            RenderGui();
             UpdateObjects();            
         }
 
@@ -262,6 +268,82 @@ namespace Client
                 DrawPlayer(player, false, i + 1, heroes.ElementAt(player.Id));
                 ++i;
             }
+        }
+
+        void RenderGui()
+        {
+            Gui.Children.Clear();
+            LinkedList<Player> players = game.getAllPlayers();
+            foreach (var player in players)
+            {
+                if (!lifeBarBorders.ContainsKey(player))
+                {
+                    lifeBarBorders.Add(player,new Rectangle());
+                    lifeBars.Add(player, new Rectangle());
+                }
+                if (player.Name.Equals(playerName))
+                    DrawPlayerGui(player);
+                else if(!player.IsKilled)
+                    DrawOpponentGui(player);
+            }
+        }
+
+        private Dictionary<Character, Rectangle> lifeBars;
+        private Dictionary<Character, Rectangle> lifeBarBorders;
+
+        public void DrawPlayerGui(Player player)
+        {
+            Rectangle lifeBarBorder = lifeBarBorders[player];
+
+            lifeBarBorder = new Rectangle();
+            lifeBarBorder.Width = 210;
+            lifeBarBorder.Height = 20;
+            SolidColorBrush borderBrush = new SolidColorBrush();
+            borderBrush.Color = Color.FromArgb(127, 0, 0, 0);
+            lifeBarBorder.Fill = borderBrush;
+            Gui.Children.Add(lifeBarBorder);
+
+            Canvas.SetTop(lifeBarBorder, 10);
+            Canvas.SetLeft(lifeBarBorder, 10);
+
+            Rectangle lifeBar = lifeBars[player];
+            lifeBar = new Rectangle();
+            lifeBar.Width = (player.HealthPoints / 100.0f) * 210.0f;
+            lifeBar.Height = 20;
+            SolidColorBrush barBrush = new SolidColorBrush();
+            barBrush.Color = Color.FromArgb(255, 255, 0, 0);
+            lifeBar.Fill = barBrush;
+            Gui.Children.Add(lifeBar);
+
+            Canvas.SetTop(lifeBar, 10);
+            Canvas.SetLeft(lifeBar, 10);
+        }
+
+        public void DrawOpponentGui(Character opponent)
+        {
+            Rectangle lifeBarBorder = lifeBarBorders[opponent];
+            
+            lifeBarBorder.Width = 40;
+            lifeBarBorder.Height = 4;
+            SolidColorBrush borderBrush = new SolidColorBrush();
+            borderBrush.Color = Color.FromArgb(127, 0, 0, 0);
+            lifeBarBorder.Fill = borderBrush;
+            Gui.Children.Add(lifeBarBorder);
+
+            Canvas.SetTop(lifeBarBorder, 20 * opponent.Position.Y - 30);
+            Canvas.SetLeft(lifeBarBorder, 20 * opponent.Position.X - 10);
+
+            Rectangle lifeBar = lifeBars[opponent];
+
+            lifeBar.Width = (opponent.HealthPoints / 100.0f) * 40.0f;
+            lifeBar.Height = 4;
+            SolidColorBrush barBrush = new SolidColorBrush();
+            barBrush.Color = Color.FromArgb(255, 255, 0, 0);
+            lifeBar.Fill = barBrush;
+            Gui.Children.Add(lifeBar);
+
+            Canvas.SetTop(lifeBar, 20 * opponent.Position.Y - 30);
+            Canvas.SetLeft(lifeBar, 20 * opponent.Position.X - 10);
         }
 
     }

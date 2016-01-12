@@ -8,5 +8,6 @@
         Title="Gra" Height="671" Width="808">
     <Grid>
         <Canvas Name="Terrain" HorizontalAlignment="Left" Height="640" VerticalAlignment="Top" Width="800"/>
+        <Canvas Name="Gui" HorizontalAlignment="Left" Height="640" VerticalAlignment="Top" Width="800"/>
     </Grid>
 </Window>
