@@ -64,7 +64,10 @@ namespace RemotableObjects
             get
             {
                 int totalHealthPoints = healthPoints;
-                //TODO: Trzeba przejść po liście equipment i dodać do zmiennej totalHealthPoints ewentualne modyfikacje liczby żyć
+                foreach (Item item in Equipment)
+                {
+                    totalHealthPoints += item.BonusLife;
+                }
                 return totalHealthPoints;
             }
 
@@ -78,8 +81,12 @@ namespace RemotableObjects
         {
             get
             {
-                //TODO: Analogicznie jak wyżej
-                return attack;
+                int totalAttack = attack;
+                foreach (Item item in Equipment)
+                {
+                    totalAttack += item.BonusAttack;
+                }
+                return totalAttack;
             }
 
             set
@@ -92,8 +99,12 @@ namespace RemotableObjects
         {
             get
             {
-                //TODO: Analogicznie jak wyżej
-                return defense;
+                int totalDefense = defense;
+                foreach (Item item in Equipment)
+                {
+                    totalDefense += item.BonusDefense;
+                }
+                return totalDefense;
             }
 
             set
@@ -112,6 +123,19 @@ namespace RemotableObjects
             set
             {
                 isKilled = value;
+            }
+        }
+
+        public LinkedList<Item> Equipment
+        {
+            get
+            {
+                return equipment;
+            }
+
+            set
+            {
+                equipment = value;
             }
         }
     }

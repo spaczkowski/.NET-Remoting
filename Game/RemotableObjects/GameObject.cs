@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace RemotableObjects
 {
+    [Serializable]
     public abstract class GameObject
     { 
         private String name;

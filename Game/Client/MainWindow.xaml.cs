@@ -55,8 +55,6 @@ namespace Client
             var sandUri = new Uri(@"resources/sand.jpg", UriKind.Relative);
             var waterUri = new Uri(@"resources/water.jpg", UriKind.Relative);
 
-            
-
             //tutaj brzydko podana ścieżka, ale to i tak będzie pobierane z serwera więc walić póki co
             var map = File.ReadLines(@"../../resources/map.csv").Select(x => x.Split(',')).ToArray();
 
@@ -109,6 +107,7 @@ namespace Client
             {
                 Thread.Sleep(100);
                 Terrain.Dispatcher.Invoke(new UpdatePlayers(RenderPlayers));
+                Terrain.Dispatcher.Invoke(new UpdatePlayers(UpdateObjects));
             }
         }
 
@@ -128,6 +127,7 @@ namespace Client
         }
 
         LinkedList<Image> heroes;
+        LinkedList<Image> itemImages;
 
         void DrawPlayer(Player player, bool isRightFaced, int skin, Image hero)
         {
@@ -137,7 +137,6 @@ namespace Client
                 knight = new BitmapImage(knightUri);
 
                 //Player player = game.getPlayer(playerName);
-
                 Point position = new Point(player.Position.X, player.Position.Y);
                 Terrain.Children.Remove(hero);
 
@@ -159,24 +158,47 @@ namespace Client
             else
             {
                 Terrain.Children.Remove(hero);
-                
-                /*
-                var shieldUri = new Uri(@"resources/shield.png", UriKind.Relative);
-                shield = new BitmapImage(shieldUri);
 
                 //Player player = game.getPlayer(playerName);
 
-                Point position = new Point(player.Position.X, player.Position.Y);
-                Terrain.Children.Remove(hero);
+                /* Point position = new Point(player.Position.X, player.Position.Y);
+                 Terrain.Children.Remove(hero);
 
-                hero.Source = shield;
-                hero.Stretch = Stretch.Fill;
-                hero.Margin = new Thickness(20 * position.X - 10, 20 * position.Y - 20, 0, 0);
-                hero.Width = 40;
-                hero.Height = 40;
-                Terrain.Children.Add(hero); */
+                 hero.Source = shield;
+                 hero.Stretch = Stretch.Fill;
+                 hero.Margin = new Thickness(20 * position.X - 10, 20 * position.Y - 20, 0, 0);
+                 hero.Width = 40;
+                 hero.Height = 40;
+                 Terrain.Children.Add(hero); */
             }
         }
+
+        void UpdateObjects()
+        {
+            var shieldUri = new Uri(@"resources/shield.png", UriKind.Relative);
+            shield = new BitmapImage(shieldUri);
+
+            LinkedList<System.Drawing.Point> items = game.getObjectsPositions("Shield");
+
+            foreach (Image item in itemImages)
+            {
+                Terrain.Children.Remove(item);
+            }
+
+            foreach (System.Drawing.Point itemPosition in items)
+            {
+                Point position = new Point(itemPosition.X, itemPosition.Y);
+                Image item = new Image();
+                item.Source = shield;
+                item.Stretch = Stretch.Fill;
+                item.Margin = new Thickness(20 * position.X - 10, 20 * position.Y - 20, 0, 0);
+                item.Width = 40;
+                item.Height = 40;
+                itemImages.AddLast(item);
+                Terrain.Children.Add(item);
+            }
+        }
+
         bool rightFaced;
 
         public MainWindow()
@@ -185,6 +207,7 @@ namespace Client
             DrawMap();
             playerName = connectionTest();
             heroes = new LinkedList<Image>();
+            itemImages = new LinkedList<Image>();
             for (int i = 0; i < 32; ++i)
             {
                 heroes.AddLast(new Image());
@@ -193,15 +216,16 @@ namespace Client
 
             RenderPlayers();
             Thread test = new Thread(new ThreadStart(UpdatingThread));
-            test.Start();
 
-            
             Random r = new Random(1993);
             for (int i = 0; i < 60; ++i) {
                 DrawTree(r.Next(7,20), r.Next(5,27));
             }
 
+            UpdateObjects();
+
             this.KeyDown += new KeyEventHandler(MainWindow_KeyDown);
+            test.Start();
         }
 
         void MainWindow_KeyDown(object sender, KeyEventArgs e)
@@ -223,8 +247,9 @@ namespace Client
                     game.makeMove(playerName, MoveType.Down);
                     break;
             }
-
-            RenderPlayers();            
+            
+            RenderPlayers();
+            UpdateObjects();            
         }
 
 

@@ -15,7 +15,7 @@ namespace RemotableObjects
         {
             if (gameObject.ItemType == ItemType.Equipment)
             {
-                equipment.AddLast(gameObject);
+                Equipment.AddLast(gameObject);
             }
             else if (gameObject.ItemType == ItemType.Instant)
             {

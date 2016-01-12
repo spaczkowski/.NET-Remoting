@@ -62,6 +62,43 @@ namespace RemotableObjects
             objectsOnMap = new GameObject[40,32];
             mapHeight = 32;
             mapWidth = 40;
+
+            Item shield = new Item();
+            shield.BonusAttack = 0;
+            shield.BonusDefense = 20;
+            shield.BonusLife = 0;
+            shield.ItemType = ItemType.Equipment;
+            shield.Name = "Shield";
+
+            for (int i = 0; i < mapWidth; i++)
+            {
+                for (int j = 0; j < mapHeight; j++)
+                {
+                    objectsOnMap[i, j] = null;
+                    if (i == 20 && j == 20)
+                    {
+                        objectsOnMap[i, j] = shield;
+                    }
+                }
+            }
+        }
+
+        public LinkedList<Point> getObjectsPositions(String name)
+        {
+            LinkedList<Point> items = new LinkedList<Point>();
+            for (int i = 0; i < mapWidth; i++)
+            {
+                for (int j = 0; j < mapHeight; j++)
+                {
+                    if (objectsOnMap[i, j] != null && objectsOnMap[i, j].Name.Equals(name))
+                    {
+                        Point point = new Point(i, j);
+                        items.AddLast(point);
+                    }
+                }
+            }
+
+            return items;
         }
 
         public void setMobs()
@@ -158,7 +195,7 @@ namespace RemotableObjects
                     else if (moveType == MoveType.Right)
                     {
                         if ((currentPlayer.Position.X + 1) == p.Position.X && currentPlayer.Position.Y == p.Position.Y)
-                        {
+                        //{
                             isFigth = true;
                             enemy = p;
                             Console.WriteLine("Figth - RIGHT");
@@ -166,11 +203,15 @@ namespace RemotableObjects
                     }
                 }
             }
-
             if (isFigth && enemy != null)
             {
-                enemy.IsKilled = true;
-                killedPlayer = enemy;
+                enemy.HealthPoints -= Math.Max(currentPlayer.Attack - enemy.Defense, 0);
+                if (enemy.HealthPoints <= 0)
+                {
+                    enemy.IsKilled = true;
+                    killedPlayer = enemy;
+                }
+                ++movesCounter;
             }
 
             return isFigth;
@@ -199,6 +240,7 @@ namespace RemotableObjects
                     Console.WriteLine("Player " + player.Name + "collected item");
                     player.collectItem((Item)gameObject);
                     objectsOnMap[position.X, position.Y - 1] = null;
+                    ++movesCounter;
                 }
                 else
                 {
@@ -232,6 +274,7 @@ namespace RemotableObjects
                     Console.WriteLine("Player " + player.Name + "collected item");
                     player.collectItem((Item)gameObject);
                     objectsOnMap[position.X, position.Y + 1] = null;
+                    ++movesCounter;
                 }
                 else
                 {
@@ -265,6 +308,7 @@ namespace RemotableObjects
                     Console.WriteLine("Player " + player.Name + "collected item");
                     player.collectItem((Item)gameObject);
                     objectsOnMap[position.X - 1, position.Y] = null;
+                    ++movesCounter;
                 }
                 else
                 {
@@ -298,6 +342,7 @@ namespace RemotableObjects
                     Console.WriteLine("Player " + player.Name + "collected item");
                     player.collectItem((Item)gameObject);
                     objectsOnMap[position.X + 1, position.Y] = null;
+                    ++movesCounter;
                 }
                 else
                 {
@@ -349,6 +394,11 @@ namespace RemotableObjects
             player.Name = name;
             player.Position = new Point(players.Count + 5, players.Count + 5);
             player.IsKilled = false;
+            player.Equipment = new LinkedList<Item>();
+
+            player.HealthPoints = 100;
+            player.Attack = 50;
+            player.Defense = 0;
             //TODO: Przydałoby się LEPIEJ ustawić pozycję początkową (random?) i statystyki
             players.AddLast(player);
         }
