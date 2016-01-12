@@ -285,7 +285,17 @@ namespace Client
                     DrawPlayerGui(player);
                 else if(!player.IsKilled)
                     DrawOpponentGui(player);
+                DrawQueue(game.getCurrentPlayerName());
             }
+        }
+
+        private void DrawQueue(string currentPlayerName)
+        {
+            TextBlock currentPlayerText = new TextBlock();
+            currentPlayerText.Text = "Kolej gracza: " + (currentPlayerName.Equals(playerName) ? "Twój ruch" : currentPlayerName);
+            currentPlayerText.Margin = new Thickness(Gui.Width - 200, 10 , 0, 0);
+            currentPlayerText.FontSize = 16;
+            Gui.Children.Add(currentPlayerText);
         }
 
         private Dictionary<Character, Rectangle> lifeBars;
@@ -293,6 +303,12 @@ namespace Client
 
         public void DrawPlayerGui(Player player)
         {
+            TextBlock healtPointLabel = new TextBlock();
+            healtPointLabel.Text = "HP";
+            healtPointLabel.Margin = new Thickness(10, 30, 0, 0);
+            healtPointLabel.FontSize = 16;
+            Gui.Children.Add(healtPointLabel);
+
             Rectangle lifeBarBorder = lifeBarBorders[player];
 
             lifeBarBorder = new Rectangle();
@@ -308,23 +324,35 @@ namespace Client
 
             Rectangle lifeBar = lifeBars[player];
             lifeBar = new Rectangle();
-            lifeBar.Width = (player.HealthPoints / 100.0f) * 210.0f;
-            lifeBar.Height = 20;
+            lifeBar.Width = (player.HealthPoints / 100.0f) * 206.0f;
+            lifeBar.Height = 16;
             SolidColorBrush barBrush = new SolidColorBrush();
             barBrush.Color = Color.FromArgb(255, 255, 0, 0);
             lifeBar.Fill = barBrush;
             Gui.Children.Add(lifeBar);
 
-            Canvas.SetTop(lifeBar, 10);
-            Canvas.SetLeft(lifeBar, 10);
+            Canvas.SetTop(lifeBar, 12);
+            Canvas.SetLeft(lifeBar, 12);
+
+            TextBlock attackInfo = new TextBlock();
+            attackInfo.Text = "ATK: " + player.Attack.ToString();
+            attackInfo.Margin = new Thickness(250, 10, 0, 0);
+            attackInfo.FontSize = 16;
+            Gui.Children.Add(attackInfo);
+
+            TextBlock defenseInfo = new TextBlock();
+            defenseInfo.Text = "DEF: " + player.Defense.ToString();
+            defenseInfo.Margin = new Thickness(350, 10, 0, 0);
+            defenseInfo.FontSize = 16;
+            Gui.Children.Add(defenseInfo);
         }
 
         public void DrawOpponentGui(Character opponent)
         {
             Rectangle lifeBarBorder = lifeBarBorders[opponent];
             
-            lifeBarBorder.Width = 40;
-            lifeBarBorder.Height = 4;
+            lifeBarBorder.Width = 42;
+            lifeBarBorder.Height = 6;
             SolidColorBrush borderBrush = new SolidColorBrush();
             borderBrush.Color = Color.FromArgb(127, 0, 0, 0);
             lifeBarBorder.Fill = borderBrush;
@@ -342,8 +370,8 @@ namespace Client
             lifeBar.Fill = barBrush;
             Gui.Children.Add(lifeBar);
 
-            Canvas.SetTop(lifeBar, 20 * opponent.Position.Y - 30);
-            Canvas.SetLeft(lifeBar, 20 * opponent.Position.X - 10);
+            Canvas.SetTop(lifeBar, 20 * opponent.Position.Y - 29);
+            Canvas.SetLeft(lifeBar, 20 * opponent.Position.X - 9);
         }
 
     }
