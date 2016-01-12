@@ -387,6 +387,16 @@ namespace RemotableObjects
             return players;
         }
 
+        private bool isPlayerOnPosition(Point position)
+        {
+            foreach (Player player in players)
+            {
+                if (player.Position == position)
+                    return true;
+            }
+            return false;
+        }
+
         private void addPlayer(String name)
         {
             Player player = new Player();
@@ -395,11 +405,23 @@ namespace RemotableObjects
             player.Position = new Point(players.Count + 5, players.Count + 5);
             player.IsKilled = false;
             player.Equipment = new LinkedList<Item>();
+            Random random = new Random();
 
             player.HealthPoints = 100;
             player.Attack = 50;
             player.Defense = 0;
-            //TODO: Przydałoby się LEPIEJ ustawić pozycję początkową (random?) i statystyki
+
+            Point point = new Point();
+            point.X = random.Next(mapWidth);
+            point.Y = random.Next(mapHeight);
+
+            while (isPlayerOnPosition(point))
+            {
+                point.X = random.Next(mapWidth);
+                point.Y = random.Next(mapHeight);
+            }
+
+            player.Position = point;
             players.AddLast(player);
         }
     }
