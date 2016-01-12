@@ -14,6 +14,7 @@ namespace RemotableObjects
 
     //Przedmioty, które zwiększają jakieś statystyki.
     //Podałem 3, które mi przyszły do głowy, listę można oczywiście powiększyć :)
+    [Serializable]
     public class Item : GameObject
     {
         private int bonusAttack;
@@ -31,6 +32,45 @@ namespace RemotableObjects
             set
             {
                 itemType = value;
+            }
+        }
+
+        public int BonusAttack
+        {
+            get
+            {
+                return bonusAttack;
+            }
+
+            set
+            {
+                bonusAttack = value;
+            }
+        }
+
+        public int BonusLife
+        {
+            get
+            {
+                return bonusLife;
+            }
+
+            set
+            {
+                bonusLife = value;
+            }
+        }
+
+        public int BonusDefense
+        {
+            get
+            {
+                return bonusDefense;
+            }
+
+            set
+            {
+                bonusDefense = value;
             }
         }
 
